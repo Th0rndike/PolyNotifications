@@ -1,0 +1,299 @@
+<html>
+  <head>
+  	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   	<!-- Bootstrap core CSS -->
+    <link href="bootstrap\bootstrap-3.3.7-dist\css\bootstrap.min.css" rel="stylesheet">
+   	<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="bootstrap/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+   	<link rel="stylesheet" href="C:\Users\Marco A. Fioravanti\Desktop\NodeProjects\FirebaseTest\NewConsole\font-awesome\font-awesome-4.6.3\css/font-awesome.min.css" />
+   		
+   	
+	<script>
+	  // Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyDcVmFqMKAcXObGd0pJQr2W6D490Mw7wVE",
+	    authDomain: "sizzling-torch-3744.firebaseapp.com",
+	    databaseURL: "https://sizzling-torch-3744.firebaseio.com",
+	    serviceAccount: "geo-notification-control-543@sizzling-torch-3744.iam.gserviceaccount.com"
+	  };
+	  firebase.initializeApp(config);
+
+	  $(document).ready(function(){
+	  	$('#content').on('show..bs.collapse', '.hiddenRow div', function (e) {
+		    resetNewCount(e.target.id);
+		    createMap(e.target.id);
+		});
+	  });
+
+	</script>
+  </head>
+  <body>
+  <style>
+  	.hiddenRow {
+    	padding: 0 !important;
+	}
+
+	.collapseTitle{
+		color:#00688B;
+		font-weight: bold;
+	}
+
+	.mapContainer{
+		height:350px;
+		padding:3px;
+		border-radius:2px;
+		border:1px solid #DDD;
+		float:right;
+		width:50%;
+	}
+	
+</style>
+	  	<script>
+	  	
+	  	function updateList(list){
+	  		console.log('list to update');
+	  		console.log(list.val());
+	  		
+	  		var currentList = list.val();
+	  		var polyHtml = createPolyTable(currentList.PolyNotifications);
+	  		var POIHtml = createPOITable(currentList.POINotifications);
+	  		$('#content').html(polyHtml + POIHtml);
+	  	}
+
+
+	  	function createPolyTable(currentList){
+	  		var htmlContent = "";
+
+	  		htmlContent += '<table class="table table-striped"><thead><th class="mainTitle">Areas</th></thead><tbody>';
+	  		for(var key in currentList){
+  				htmlContent +='<tr class="collapseTitle" data-toggle="collapse" data-target="#'+key+'" id="title'+key+'"><td>'+ key + createBadges(currentList[key].length,key) + '</td></tr>'
+				
+				htmlContent +='<tr class="grouped-notifications" id="'+key+'TR">'
+				htmlContent +='<td  class="hiddenRow" ><div id="'+key+'" class="accordian-body collapse"><ul class="list-group" style="width:50%;float:left;padding:3px;">'
+				currentList[key].forEach(function(item){
+					//console.log(item);
+	  				htmlContent += '<li class="list-group-item notificationItem">'+ item +'</li>' ;
+	  			});					  
+				htmlContent +='</ul><div class="mapContainer" id="'+key+'Map" >Loading map...</div></div></td></tr>'
+	  		}
+	  		htmlContent +='</tbody>'
+			htmlContent += '</table>'
+
+			return htmlContent;
+	  	}
+
+	  	function createPOITable(currentList){
+	  		var htmlContent = "";
+	  		console.log('poi list');
+	  		console.log(currentList);
+	  		htmlContent += '<table class="table table-striped"><thead><th class="mainTitle">POI</th></thead><tbody>';
+	  		for(var key in currentList){
+  				htmlContent +='<tr class="collapseTitle" data-toggle="collapse" data-target="#'+key+'" id="title'+key+'"><td>'+ key + createBadges(currentList[key].length,key) + '</td></tr>'
+				
+				htmlContent +='<tr class="grouped-notifications" id="'+key+'TR">'
+				htmlContent +='<td  class="hiddenRow" ><div id="'+key+'" class="accordian-body collapse"><ul class="list-group" style="width:50%;float:left;padding:3px;">'
+				currentList[key].forEach(function(item){
+					console.log(item);
+	  				htmlContent += '<li class="list-group-item notificationItem">'+ item +'</li>' ;
+	  			});					  
+				htmlContent +='</ul><div class="mapContainer" id="'+key+'Map" >Loading map...</div></div></td></tr>'
+	  		}
+	  		htmlContent +='</tbody>'
+			htmlContent += '</table>'
+
+			return htmlContent;
+	  	}
+
+	  	///BADGES HANDLING
+	  	function createBadges(nNotifications, currentPoly){
+	  		var result = '';
+
+	  		totalNewToShow = calculateNewCount(nNotifications,currentPoly);
+
+	  		result += '<span class="badge" style="float:right;">' + nNotifications + ' <i class="fa fa-comments"></i></span><span class="badge"  style="float:right;margin-right:3px;'+ ((totalNewToShow > 0) ? 'background-color:red' : 'background-color:#777') +'">' + totalNewToShow + ' <i class="fa fa-bell"></i></span>';
+
+	  		return result;
+	  	}
+
+	  	function calculateNewCount(nNotifications,currentPoly){
+	  		var currentNumber = $('#' + currentPoly + ' .notificationItem').length;
+	  		var totalNewToShow = 0;
+
+	  		if(nNotifications >= currentNumber && $('#title' + currentPoly).find('span').length > 0){
+	  			var newOnes = nNotifications - currentNumber;
+	  			var notReadNewOnes = getCurrentNewCount(currentPoly);
+
+	  			totalNewToShow = parseInt(newOnes) + parseInt(notReadNewOnes);
+	  		}
+
+	  		return totalNewToShow;
+	  	}
+
+	  	function resetNewCount(listResetted){
+	  		var clicked = $('#title' + listResetted);
+	  		var bothSpans = clicked.find('span');
+	  		bothSpans[1].innerHTML = '0 <i class="fa fa-bell"></i>';
+	  		$(bothSpans[1]).css("background-color","#777");
+	  	}
+
+	  	function getCurrentNewCount(polyName){
+	  		var bothSpans = $('#title' + polyName).find('span');
+	  		var currentCount = bothSpans[1].innerHTML.split(' ')[0];
+	  		return currentCount;
+	  	}
+	  	///BADGES HANDLING END
+
+	  	///MAP rendering
+	  	function createMap(listResetted){
+  			$.ajax({
+			    url: "https://sizzling-torch-3744.firebaseio.com/Polygons/"+listResetted+"/latLngs.json",
+			    // The name of the callback parameter, as specified by the YQL service
+			    jsonp: "callback",
+			    // Tell jQuery we're expecting JSONP
+			    dataType: "jsonp",
+			    // Work with the response
+			    success: function( response ) {
+			        var latLngs = response;
+		  	  		$.ajax({
+					    url: "https://sizzling-torch-3744.firebaseio.com/Positions/ilMorgi.json",
+					    // The name of the callback parameter, as specified by the YQL service
+					    jsonp: "callback",
+					    // Tell jQuery we're expecting JSONP
+					    dataType: "jsonp",
+					    // Work with the response
+					    success: function( response ) {
+					        var currentPosition = response;
+				  	  		setMap(calculateMiddlePoint(latLngs),latLngs,[response[0],response[1]],listResetted);
+					    }
+					});
+
+		  	  		//setMap(calculateMiddlePoint(latLngs),latLngs);
+			    }
+			});
+	  	}
+
+
+	  	function calculateMiddlePoint(latLngs){
+	  		var highestLat = latLngs.map(function(item){
+  	  			return item.lat;
+  	  		}).reduce(function(a,b){
+  	  			return Math.max(a,b);
+  	  		});
+
+  	  		var highestLon = latLngs.map(function(item){
+  	  			return item.lng;
+  	  		}).reduce(function(a,b){
+  	  			return Math.max(a,b);
+  	  		});
+
+  	  		var lowestLat = latLngs.map(function(item){
+  	  			return item.lat;
+  	  		}).reduce(function(a,b){
+  	  			return Math.min(a,b);
+  	  		});
+
+  	  		var lowestLon = latLngs.map(function(item){
+  	  			return item.lng;
+  	  		}).reduce(function(a,b){
+  	  			return Math.min(a,b);
+  	  		});
+
+  	  		return ([(highestLat + lowestLat) / 2,(highestLon + lowestLon) / 2,])
+	  }
+
+
+	  function setMap(middlepoint, latLngs, marker, currentPoly){
+	  		var mymap = L.map(currentPoly + 'Map').setView(middlepoint, 13);
+	  		 L.tileLayer(
+		        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+			    {
+			      type: 'map',
+			      ext: 'jpg',
+			      attribution: '',
+	              maxZoom: 19,
+			    }
+			  ).addTo(mymap);
+	  		
+	  		var polyFlattened = latLngs.map(function(item){
+	  			return [item.lat,item.lng];
+	  		});
+
+	  		var polygon = L.polygon(polyFlattened);
+	  		polygon.bindPopup("LeftNE");
+	  		polygon.setStyle({fillColor: '#FF6600'});
+	  		polygon.setStyle({color: '#FF6600'});
+	  		polygon.addTo(mymap);
+	  		
+	  		var markerReal = L.marker(marker);
+	  		markerReal.bindPopup("ilMorgi");
+	  		markerReal.addTo(mymap);
+
+	  		mymap.fitBounds(latLngs);
+
+	  }
+	  	///MAP rendnering END
+
+	  	///firebase events
+	  	var posRef = firebase.database().ref('Positions/');
+	  	posRef.on("value",function(snapshot){
+	  		console.log(snapshot.val());
+	  	});
+
+	    var myNotiRef = firebase.database().ref('Users/ilMorgi/Notifications/');
+	    myNotiRef.on("value",function(snapshot){
+	    	//console.log('value');	    	
+	    	updateList(snapshot);
+	    });
+	    ///firebase events end
+
+	    ///login
+	    var SignIn = function(email,pass){
+		firebase.auth().signInWithEmailAndPassword(email, pass).catch(function(error) {
+			alert('error');  
+		});
+		///login end
+		
+
+
+	  };
+	    </script>
+	        <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">NotiArea</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Current Areas</a></li>
+            <li><a href="C:/Users/Marco%20A.%20Fioravanti/Desktop/NodeProjects/FirebaseTest/NewConsole/mapTest.html">Overview Map</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div>
+        	    <H3>CURRENT NOTIFICATIONS</H3>
+		  		<div id='content'>
+		  			
+		  		</div>
+
+      </div>
+    </div><!-- /.container -->
+	
+    
+  </body>
+</html>

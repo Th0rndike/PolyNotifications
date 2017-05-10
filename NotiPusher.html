@@ -1,0 +1,181 @@
+<html>
+  <head>
+   	<script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+  	<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+	<script>
+	  // Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyDcVmFqMKAcXObGd0pJQr2W6D490Mw7wVE",
+	    authDomain: "sizzling-torch-3744.firebaseapp.com",
+	    databaseURL: "https://sizzling-torch-3744.firebaseio.com",
+	    storageBucket: "sizzling-torch-3744.appspot.com",
+	  };
+	  firebase.initializeApp(config);
+	</script>
+  </head>
+  <body>
+	  	<script>
+	  	  
+	  	  var AddPolyNew = function(name,latLngs,color,notifications){
+				//var FirebasepolyRef = new Firebase('https://sizzling-torch-3744.firebaseio.com/Polygons/');
+				var FirebasepolyRef = firebase.database().ref('Polygons/');
+				var newPolyObj = {
+					latLngs:latLngs,
+					Notifications: notifications,
+					color:color,		
+				};
+				FirebasepolyRef.child(name).set(newPolyObj);
+		  };
+
+		  var RemovePoly = function(name){
+		  	    //var FirebasepolyRef = new Firebase('https://sizzling-torch-3744.firebaseio.com/Polygons/' + name);
+		  	    var FirebasepolyRef = firebase.database().ref('Polygons/' + name + '/');
+		  	    FirebasepolyRef.remove();
+		  };
+
+	  	  var SetUserPosition = function(user,position){
+	  	  		//var myPosRefUrl ='https://sizzling-torch-3744.firebaseio.com/Positions/';
+	  	  		var myRef = firebase.database().ref('Positions/' + user + '/');
+	  	  		//var myRef = new Firebase(myPosRefUrl + '/'+ user + '/');
+	  	  		myRef.set(position);
+	  	  }
+	  	  
+	  	  var CreateUser = function(user){
+	  	  		//var myUserListUrl = 'https://sizzling-torch-3744.firebaseio.com/Users/';
+	  	  		var myRef =firebase.database().ref('Users/');
+	  	  		//var myRef = new Firebase(myUserListUrl);
+	  	  		var newUser = {};
+
+	  	  		newUser = {Notifications : {welcome:'welcome'}};
+	  	  		console.log('newUser');
+	  	  		console.log(newUser);
+	  	  		var currentUsers;
+
+	  	  		$.ajax({
+				    url: "https://sizzling-torch-3744.firebaseio.com/Users.json",
+				 
+				    // The name of the callback parameter, as specified by the YQL service
+				    jsonp: "callback",
+				 
+				    // Tell jQuery we're expecting JSONP
+				    dataType: "jsonp",
+				 
+				    
+				    // Work with the response
+				    success: function( response ) {
+				        currentUsers = response;
+			  	  		var toAdd = [].concat(currentUsers).concat(newUser);
+
+			  	  		myRef.child(user).set(newUser);
+				    }
+				});
+	  	  		
+	  	  		
+	  	  }
+
+	  	  var AddNotification = function(polyname,notification){
+	  	  		//var myUserListUrl = 'https://sizzling-torch-3744.firebaseio.com/Users/';
+	  	  		var myPolyRef =firebase.database().ref('Polygons/' + polyname + '/Notifications/');
+	  	  		
+	  	  		$.ajax({
+				    url: "https://sizzling-torch-3744.firebaseio.com/Polygons/" + polyname + '/Notifications.json',
+				 
+				    // The name of the callback parameter, as specified by the YQL service
+				    jsonp: "callback",
+				 
+				    // Tell jQuery we're expecting JSONP
+				    dataType: "jsonp",
+				 
+				    
+				    // Work with the response
+				    success: function( response ) {
+				        var allNotis = response;
+				        allNotis.push(notification);
+
+				        myPolyRef.set(allNotis);
+				    }
+				});
+	  	  }
+
+
+	  	  $(document).ready(function(){
+	  	  	$('#submitPosChange').click(function(){
+	  	  		
+		  		var user = $('#userid').val();
+		  		var position = [$(lat).val(), $(lon).val()];
+		  		SetUserPosition(user,position);
+		  	});
+
+		  	$('#submitNewUser').click(function(){
+	  	  		var user = $('#useridnewuser').val();
+	  	  		var position = [$(latnewus).val(), $(lonnewus).val()];
+	  	  		SetUserPosition(user,position);
+	  	  		CreateUser(user);
+		  		
+		  	});
+
+		  	$('#submitNewPoly').click(function(){
+	  	  		var name = $('#polyname').val();
+	  	  		var json = $('#polyjson').val();
+	  	  		var noti = $('#polynotification').val();
+	  	  		
+	  	  		var parsedJson = JSON.parse(json);
+	  	  		var latlon = parsedJson[0].latLngs;
+		  		var color = parsedJson[0].color;
+
+		  		AddPolyNew(name,latlon,color,[noti]);
+		  	});
+
+		  	$('#removePoly').click(function(){
+		  		var name = $('#polyremovename').val();
+
+		  		RemovePoly(name);
+		  	});	
+
+		  	$('#addnoti').click(function(){
+		  		var name = $('#polynewnotiname').val();
+
+		  		var noti = $('#polynewnoti').val();
+
+		  		AddNotification(name,noti);
+		  	});	
+	  	  });
+	  	  
+
+	    </script>
+  		<h3>CHANGE USER POSITION</h3>
+  		<label>User:</label>
+  		<input type="text" id="userid"></input>
+  		<label>Position:</label>
+  		<input type="text" id="lat"></input>
+  		<input type="text" id="lon"></input>
+  		<button type="button" id='submitPosChange' >submit pos</button>
+  		<p>----------------------------------------------------------</p>
+  		<h3>ADD NEW USER</h3>
+  		<label>User:</label>
+  		<input type="text" id="useridnewuser"></input>
+  		<label>Position:</label>
+  		<input type="text" id="latnewus"></input>
+  		<input type="text" id="lonnewus"></input>
+  		<button type="button" id='submitNewUser' >submit user</button>
+  		<p>----------------------------------------------------------</p>
+  		<h3>ADD NEW Polygon</h3>
+  		<label>Name:</label>
+  		<input type="text" id="polyname"></input>
+  		<label>IITC Json:</label>
+  		<input type="text" id="polyjson"></input>
+  		<label>First Notification:</label>
+  		<input type="text" id="polynotification"></input>
+  		<button type="button" id='submitNewPoly' >submit poly</button>
+  		<p>----------------------------------------------------------</p>
+  		<h3>Remove Polygon</h3>
+  		<label>Name:</label>
+  		<input type="text" id="polyremovename"></input>
+  		<button type="button" id='removePoly' >remove poly</button>
+  		<h3>Add Notification</h3>
+  		<label>Name:</label>
+  		<input type="text" id="polynewnotiname"></input>
+  		<input type="text" id="polynewnoti"></input>
+  		<button type="button" id='addnoti' >Add Notification</button>
+  </body>
+</html>

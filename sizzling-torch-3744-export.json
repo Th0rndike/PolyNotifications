@@ -1,0 +1,140 @@
+{
+  "POI" : {
+    "POI2" : {
+      "description" : "first msg",
+      "distance" : 300,
+      "lat" : 45.4868225,
+      "lng" : 9.2094178
+    },
+    "POI2" : {
+      "description" : "uffa",
+      "distance" : 500,
+      "lat" : 45.4868225,
+      "lng" : 9.2094178
+    }
+  },
+  "Polygons" : {
+    "LeftNE" : {
+      "Notifications" : [ "ferrocarril", "carr", "fiib", "foo", "go", "nth" ],
+      "Users" : [ "aldes", "ilMorgi" ],
+      "color" : "#777777",
+      "latLngs" : [ {
+        "lat" : 45.49966955063677,
+        "lng" : 9.211478233337402
+      }, {
+        "lat" : 45.49587935077509,
+        "lng" : 9.21928882598877
+      }, {
+        "lat" : 45.48480810003017,
+        "lng" : 9.211907386779785
+      }, {
+        "lat" : 45.49118636890595,
+        "lng" : 9.199762344360352
+      } ]
+    },
+    "Nordest" : {
+      "Notifications" : [ "ciao sono polygeo", "poliyee", "nuova noti", "test", "hola" ],
+      "Users" : [ "Aklo09", "Th0rndike" ],
+      "color" : "#a24ac3",
+      "latLngs" : [ {
+        "lat" : 45.505216,
+        "lng" : 9.222642
+      }, {
+        "lat" : 45.504145,
+        "lng" : 9.240635
+      }, {
+        "lat" : 45.492573,
+        "lng" : 9.215099
+      } ]
+    },
+    "Orsi" : {
+      "Notifications" : [ "orsi", "distruggere", "farm 8" ],
+      "Users" : [ "FightStar" ],
+      "color" : "#00FF33",
+      "latLngs" : [ {
+        "lat" : 45.511730314128364,
+        "lng" : 9.199204444885252
+      }, {
+        "lat" : 45.509865726553514,
+        "lng" : 9.219717979431152
+      }, {
+        "lat" : 45.497086,
+        "lng" : 9.207867
+      } ]
+    },
+    "lowerNE" : {
+      "Notifications" : [ "settala is in", "hello! this is a new one!", "aaaand another one", "goooo", "test new", "one more noti" ],
+      "Users" : [ "ilMorgi", "tapion" ],
+      "color" : "#FF3300",
+      "latLngs" : [ {
+        "lat" : 45.496089924127084,
+        "lng" : 9.196672439575195
+      }, {
+        "lat" : 45.485319591622876,
+        "lng" : 9.192209243774414
+      }, {
+        "lat" : 45.48047527908163,
+        "lng" : 9.210619926452637
+      }, {
+        "lat" : 45.481979768563946,
+        "lng" : 9.219932556152344
+      }, {
+        "lat" : 45.48941135717421,
+        "lng" : 9.221134185791016
+      }, {
+        "lat" : 45.49666147639903,
+        "lng" : 9.200234413146973
+      } ]
+    }
+  },
+  "Positions" : {
+    "Aklo09" : [ "45.499731", "9.220432" ],
+    "FightStar" : [ "45.501651", "9.209792" ],
+    "Th0rndike" : [ "45.499731", "9.220432" ],
+    "aldes" : [ "45.495017", "9.210202" ],
+    "ilMorgi" : [ "45.488052", "9.208187" ],
+    "tapion" : [ "45.482763", "9.208327" ]
+  },
+  "Users" : {
+    "Aklo09" : {
+      "Notifications" : {
+        "Nordest" : [ "ciao sono polygeo", "poliyee", "nuova noti", "test", "hola" ]
+      }
+    },
+    "FightStar" : {
+      "Notifications" : {
+        "Orsi" : [ "orsi", "distruggere", "farm 8" ]
+      }
+    },
+    "Th0rndike" : {
+      "Notifications" : {
+        "Nordest" : [ "ciao sono polygeo", "poliyee", "nuova noti", "test", "hola" ]
+      }
+    },
+    "aldes" : {
+      "Notifications" : {
+        "LeftNE" : [ "ferrocarril", "carr", "fiib", "foo", "go", "nth" ]
+      }
+    },
+    "ilMorgi" : {
+      "PolyNotifications" : {
+        "LeftNE" : [ "ferrocarril", "carr", "fiib", "foo", "go", "nth" ],
+        "lowerNE" : [ "settala is in", "hello! this is a new one!", "aaaand another one", "goooo", "test new", "one more noti" ]
+      },
+      "POINotifications":{
+        "test1" : [ "first msg" ],
+        "test2" : [ "uffa" ]
+      }
+      }
+    },
+    "tapion" : {
+      "PolyNotifications" : {
+        "lowerNE" : [ "settala is in", "hello! this is a new one!", "aaaand another one", "goooo", "test new", "one more noti" ],
+      },
+      "POINotifications":{  
+
+        "test2" : [ "uffa" ]
+      }
+    }
+  }
+}

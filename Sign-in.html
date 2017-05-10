@@ -1,0 +1,66 @@
+<html>
+  <head>
+   	<script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+  	<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+	<script>
+	  var SignIn = function(email,pass){
+		firebase.auth().signInWithEmailAndPassword(email, pass).catch(function(error) {
+			alert('error');  
+		});
+	  };
+
+	  // Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyDcVmFqMKAcXObGd0pJQr2W6D490Mw7wVE",
+	    authDomain: "sizzling-torch-3744.firebaseapp.com",
+	    databaseURL: "https://sizzling-torch-3744.firebaseio.com",
+	    storageBucket: "sizzling-torch-3744.appspot.com",
+	  };
+	  firebase.initializeApp(config);
+
+	  $(document).ready(function(){
+	  		$('#signin').click(function(){
+	  			var email = $('#email').val();
+	  			var pass = $('#pass').val();
+	  			var nickname = $('#nick').val();
+	  			SignIn(email,pass);
+
+	  			var user = firebase.auth().currentUser;
+	  			user.updateProfile({
+					  displayName: "Th0rndike"
+					  //isAdmin: "true"
+					  //photoURL: "https://example.com/jane-q-user/profile.jpg"
+					}).then(function() {
+						//successful.
+						var userResult = firebase.auth().currentUser;
+						//for(var key in userResult)
+						//alert(userResult["displayName"]);
+						//alert(userResult["isAdmin"]);
+						$('#notLogged').hide();
+						$('#loggedInfo').html("<h3 id='loggedInfo'>Logged in as: " + userResult["displayName"] + " </h3>");
+						$('#logged').show();
+					}, function(error) {
+					  // An error happened.
+					});
+	  			});
+	  			//alert(user);
+
+	  });
+	</script>
+  </head>
+  <body>
+	    <script>
+	  		
+	    </script>
+	    <div id='notLogged'>
+	  		<input type="text" id="email"></input>
+	  		<input type="text" id="pass"></input>
+	  		<input type="text" id="nick"></input>
+	  		<button type="button" id='signin' >Sign In</button>
+	  		
+	  	</div>
+	  	<div id='logged' style='display: none'>
+	  		<h3 id='loggedInfo'></h3>
+	  	</div>
+
+  </body>

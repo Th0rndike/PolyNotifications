@@ -1,0 +1,20 @@
+{
+  "rules":{
+    "Users":{
+      	"$nickname":{
+          ".read": "(auth !== null && (auth.name == $nickname || auth.name == 'Th0rndike' || auth.worker_account === true))",
+          ".write":"(auth !== null && (auth.name == $nickname || auth.name == 'Th0rndike'|| auth.worker_account === true))"
+        }
+    },
+    "Positions":{
+      "$nickname":{
+        ".write" : "(auth !== null && (auth.name == $nickname || auth.name == 'Th0rndike'|| auth.worker_account === true))",
+        ".read":true
+      }
+    },
+      "Polygons":{
+        ".read":true,
+         ".write":true
+      }
+}
+}

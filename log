@@ -1,0 +1,294 @@
+"Users":{
+      	"$nickname":{
+          ".read": "(auth !== null && (auth.name == $nickname || auth.name == 'Th0rndike'))",
+          ".write":"(auth !== null && (auth.name == $nickname || auth.name == 'Th0rndike'))"
+        }
+    },
+    "Positions":{
+      "$nickname":{
+        ".write" : "(auth !== null && (auth.name == $nickname || auth.name == 'Th0rndike'))",
+        ".read":"(auth !== null && (auth.name == $nickname || auth.name == 'Th0rndike'))"
+      }
+    }
+
+
+
+
+
+
+    Initializing...
+Done
+functions
+functions end
+registering events
+pos events
+poly events
+end
+{ Aklo09: [ '45.499731', '9.220432' ],
+  FightStar: [ '45.501651', '9.209792' ],
+  Th0rndike: [ '45.499731', '9.220432' ],
+  aldes: [ '45.495018', '9.210202' ],
+  ilMorgi: [ '45.488052', '9.208187' ],
+  tapion: [ '45.482763', '9.208327' ] }
+polyadded
+handling new poly
+polyadded
+handling new poly
+polyadded
+handling new poly
+polyadded
+handling new poly
+before processing
+undefined
+Aklo09
+newUserList single
+setting poly users
+[ 'Aklo09' ]
+false
+false
+polychanged
+[ 'Aklo09' ]
+polyDataUsers
+true
+before processing
+undefined
+FightStar
+newUserList single
+setting poly users
+[ 'FightStar' ]
+false
+false
+polychanged
+[ 'FightStar' ]
+polyDataUsers
+true
+before processing
+undefined
+Th0rndike
+newUserList single
+setting poly users
+[ 'Th0rndike' ]
+false
+false
+polychanged
+[ 'Th0rndike' ]
+polyDataUsers
+true
+before processing
+undefined
+aldes
+newUserList single
+setting poly users
+[ 'aldes' ]
+false
+false
+polychanged
+[ 'aldes' ]
+polyDataUsers
+true
+before processing
+undefined
+ilMorgi
+newUserList single
+setting poly users
+[ 'ilMorgi' ]
+false
+false
+polychanged
+[ 'ilMorgi' ]
+polyDataUsers
+true
+before processing
+[ 'tapion' ]
+ilMorgi
+newUserList pushed
+[ 'tapion', 'ilMorgi' ]
+setting poly users
+[ 'tapion', 'ilMorgi' ]
+false
+false
+polychanged
+[ 'tapion', 'ilMorgi' ]
+polyDataUsers
+true
+filtered in handle new poly
+[]
+setting poly users
+[]
+false
+true
+polychanged
+undefined
+polyDataUsers
+false
+filtered in handle new poly
+[]
+setting poly users
+[]
+false
+true
+polychanged
+undefined
+polyDataUsers
+false
+filtered in handle new poly
+[]
+setting poly users
+[]
+false
+true
+polychanged
+undefined
+polyDataUsers
+false
+filtered in handle new poly
+[]
+setting poly users
+[]
+false
+true
+polychanged
+undefined
+polyDataUsers
+false
+
+
+
+
+
+Initializing...
+Done
+functions
+functions end
+registering events
+pos events
+poly events
+end
+{ Aklo09: [ '45.499731', '9.220432' ],
+  FightStar: [ '45.501651', '9.209792' ],
+  Th0rndike: [ '45.499731', '9.220432' ],
+  aldes: [ '45.495018', '9.210202' ],
+  ilMorgi: [ '45.488052', '9.208187' ],
+  tapion: [ '45.482763', '9.208327' ] }
+polyadded
+handling new poly
+polyadded
+handling new poly
+polyadded
+handling new poly
+polyadded
+handling new poly
+before processing
+undefined
+Aklo09
+newUserList single
+setting poly users
+[ 'Aklo09' ]
+false
+false
+polychanged
+[ 'Aklo09' ]
+polyDataUsers
+true
+before processing
+undefined
+FightStar
+newUserList single
+setting poly users
+[ 'FightStar' ]
+false
+false
+polychanged
+[ 'FightStar' ]
+polyDataUsers
+true
+before processing
+undefined
+Th0rndike
+newUserList single
+setting poly users
+[ 'Th0rndike' ]
+false
+false
+polychanged
+[ 'Th0rndike' ]
+polyDataUsers
+true
+before processing
+undefined
+aldes
+newUserList single
+setting poly users
+[ 'aldes' ]
+false
+false
+polychanged
+[ 'aldes' ]
+polyDataUsers
+true
+before processing
+undefined
+ilMorgi
+newUserList single
+setting poly users
+[ 'ilMorgi' ]
+false
+false
+polychanged
+[ 'ilMorgi' ]
+polyDataUsers
+true
+before processing
+[ 'tapion' ]
+ilMorgi
+newUserList pushed
+[ 'tapion', 'ilMorgi' ]
+setting poly users
+[ 'tapion', 'ilMorgi' ]
+false
+false
+polychanged
+[ 'tapion', 'ilMorgi' ]
+polyDataUsers
+true
+filtered in handle new poly
+[]
+setting poly users
+[]
+false
+true
+polychanged
+undefined
+polyDataUsers
+false
+filtered in handle new poly
+[]
+setting poly users
+[]
+false
+true
+polychanged
+undefined
+polyDataUsers
+false
+filtered in handle new poly
+[]
+setting poly users
+[]
+false
+true
+polychanged
+undefined
+polyDataUsers
+false
+filtered in handle new poly
+[]
+setting poly users
+[]
+false
+true
+polychanged
+undefined
+polyDataUsers
+false
+
