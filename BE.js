@@ -4,6 +4,8 @@ var Vec2 = require('vec2');
 var restClient = require('node-rest-client').Client;
 require("geolib");
 var geoutils = require('geojson-utils');
+var utils = require('./Util.js')
+var geo = require('./georequire.js')
 
 console.log('Initializing...');
 var initResult  = firebase.initializeApp({
@@ -11,7 +13,7 @@ var initResult  = firebase.initializeApp({
   serviceAccount: "Newest-b4a5315e376f.json"
 });
 
-
+///AUTH SNIPPET
 
 //var auth = firebase.auth();
 //var token = auth.createCustomToken("noti-control", {"worker_account": true});
@@ -23,67 +25,13 @@ var initResult  = firebase.initializeApp({
 
 //var FirebasePoliPath =  new Firebase('https://sizzling-torch-3744.firebaseio.com/Polygons/');
 
-var polyObject = {
-	Polygon : {},
-	Notifications:{}
-};
-
-console.log('functions');
-
-var IsInPoly = function(position,poly){
-	var result = poly.containsPoint(Vec2(position[0],position[1]));
-	console.log('result ' + result);
-	return result;
-}
-
-var GetPolygonObject = function(PolyFromDB){
-	var vecArray = PolyFromDB.Polygon.points.map(function(item){
-		return  Vec2(item.x,item.y);
-	});
-
-	return new poly(vecArray);
-}
-
-
-var GetFlattenedPositions = function(PositionsFromDB){
-	var PositionsFlattened = [];
-	for(var p in PositionsFromDB.val()){
-		PositionsFlattened.push({ user: p , position : [PositionsFromDB.val()[p][0],PositionsFromDB.val()[p][1]]});
-	}
-
-	return PositionsFlattened;
-}
-
+//DB OPERATIONS
 var GetAllPolygons = function(){
 	var url =  'https://sizzling-torch-3744.firebaseio.com/Polygons.json';
 	var client = new restClient();
 	client.get(url,function(data,response){
 		return data;
 	})
-}
-
-var GetFlattenedUsers = function(users){
-	var result = [];
-	for(var key in users){
-		result.push({name:key,position:users[key]});
-	}
-	return result;
-}
-
-var GetFlattenedPolyNew = function(poly){
-	var result = [];
-	for(var key in poly){
-		result.push({name:key,latLngs:poly[key].latLngs,color:poly[key].color,notifications:poly[key].Notifications, users: poly[key].Users});
-	}
-	return result;
-}
-
-var GetFlattenedPOIs = function(POIs){
-	var result = [];
-	for(var key in POIs){
-		result.push({name:key,latLngs:[POIs[key].lat,POIs[key].lng],notifications:POIs[key].description,distance:POIs[key].distance, users: POIs[key].Users});
-	}
-	return result;
 }
 
 var SetPolyNotifications= function(user,notifications,polyName){
@@ -125,7 +73,6 @@ var RemoveNotifications = function(user,polyName){
 }
 
 var RemoveUser = function(user){
-	//var userRef = new Firebase('https://sizzling-torch-3744.firebaseio.com/Users/'+ user);
 	var userRef = firebase.database().ref('Users/'+ user);
 	userRef.remove();
 
@@ -136,9 +83,7 @@ var RemoveUser = function(user){
 	    
 	    var polys = data;
 
-	    var FlattenedPolys = GetFlattenedPolyNew(polys);
-		//console.log('polyuserspre');
-		//console.log(poly.Users);
+	    var FlattenedPolys = utils.GetFlattenedPolyNew(polys);
 		var polygonsToUpdate = FlattenedPolys.filter(function(poly){
 			return (poly.Users != undefined) && (poly.Users.length > 0) && (poly.Users.indexOf(user) >= 0);
 		});
@@ -156,29 +101,7 @@ var RemoveUser = function(user){
 	});
 }
 
-var IsInPolyNew = function(latLngs,position){
-	var latLngArray = new Array();
-	latLngArray.push(latLngs.map(function(item){return [item.lat,item.lng]}));
-	//console.log('latlngarray');
-	//console.log(latLngArray);
-	return geoutils.pointInPolygon({"type":"Point","coordinates":position},
-		{"type":"Polygon", "coordinates":latLngArray});
-}
 
-var IsInRadiusOfPOI = function(poiCoordinates,currentPosition, maxDistance){
-	/***gju.pointDistance({type: 'Point', coordinates:[-122.67738461494446, 45.52319466622903]},
-                  {type: 'Point', coordinates:[-122.67652630805969, 45.52319466622903]})*****/
-    console.log('before is in radius');
-    console.log(poiCoordinates);
-    console.log(currentPosition);
-    var distance = geoutils.pointDistance({type: 'Point', coordinates:poiCoordinates},
-                  {type: 'Point', coordinates:currentPosition});
-    console.log('checkingRadius for ' + distance + ' and max distance ' + maxDistance);
-    if(distance < maxDistance)
-    	return true;
-    else
-    	return false;
-}
 
 var HandleNewPositionPOIs = function(user, newPos){
 	console.log('handglingnewpositionpois');
@@ -189,16 +112,16 @@ var HandleNewPositionPOIs = function(user, newPos){
 		var POIs = data;
 		console.log('POIS');
 		console.log(POIs);
-		var FlattenedPOIs = GetFlattenedPOIs(POIs);
+		var FlattenedPOIs = utils.GetFlattenedPOIs(POIs);
 		var MatchedPOIs = FlattenedPOIs.filter(function(item){
 			var hasUsers = item.users != null;
 			console.log(item);
 			if(hasUsers)
-				return (item.users.indexOf(user) < 0)  && IsInRadiusOfPOI(item.latLngs,newPos,item.distance);
+				return (item.users.indexOf(user) < 0)  && geo.IsInRadiusOfPOI(item.latLngs,newPos,item.distance);
 	    	else{
 	    		console.log('before is in radius of poi');
 	    		console.log(item);
-	    		return IsInRadiusOfPOI(item.latLngs,newPos,item.distance);
+	    		return geo.IsInRadiusOfPOI(item.latLngs,newPos,item.distance);
 	    	}
 		});
 
@@ -219,13 +142,13 @@ var HandleNewPositionPolys = function(user,newPos){
 	    
 	    var polys = data;
 	    //console.log(polys);
-	    var FlattenedPolys = GetFlattenedPolyNew(polys);
+	    var FlattenedPolys = utils.GetFlattenedPolyNew(polys);
 	    var MatchedPolys = FlattenedPolys.filter(function(item){
 	    	var hasUsers = item.users != null;
 	    	if(hasUsers)
-	    		return (item.users.indexOf(user) < 0)  && IsInPolyNew(item.latLngs,newPos);
+	    		return (item.users.indexOf(user) < 0)  && geo.IsInPolyNew(item.latLngs,newPos);
 	    	else
-	    		return IsInPolyNew(item.latLngs,newPos);
+	    	    return geo.IsInPolyNew(item.latLngs, newPos);
 	    });
 
 	    MatchedPolys.forEach(function(item){
@@ -257,11 +180,11 @@ var HandleNewPoly = function(name,polyData){
 	client.get(usersUrl, function (data, response) {
 		var users = data;
 
-		var FlattenedUsers = GetFlattenedUsers(users);
+		var FlattenedUsers = utils.GetFlattenedUsers(users);
 		console.log('FlattenedUsers');
 		console.log(FlattenedUsers);
 		var FilteredUsers = FlattenedUsers.filter(function(user){
-			return IsInPolyNew(polyData.latLngs,user.position);
+		    return geo.IsInPolyNew(polyData.latLngs, user.position);
 		});
 		console.log('filtered users');
 		console.log(FilteredUsers);
@@ -276,8 +199,10 @@ var HandleNewPoly = function(name,polyData){
 	});
 }
 
-console.log('functions end');
-console.log('registering events');
+
+
+//EVENT CALLBACKS
+
 /***POSITION HANDLING***/
 var FirebasePositionsRef = firebase.database().ref('Positions/');
 
@@ -319,7 +244,8 @@ FirebasePositionsRef.on("child_removed",function(snapshot){
 });
 
 
-console.log('poly events');
+
+
 /***POLYGON HANDLING***/
 var FirebasePolygonRef = firebase.database().ref('Polygons/');
 
@@ -350,6 +276,7 @@ FirebasePolygonRef.on("child_removed",function(snapshot){
   console.log("The read failed: " + errorObject.code);
 });
 
+//polygon changed
 FirebasePolygonRef.on("child_changed",function(snapshot){
 	console.log('polychanged');
 	var polyName = snapshot.key;
@@ -358,7 +285,6 @@ FirebasePolygonRef.on("child_changed",function(snapshot){
 	console.log(polyData.Users);
 	console.log('polyDataUsers');
 	console.log(typeof polyData.Users != 'undefined');
-	//HandleNewPoly(polyName,polyData);
 
 	if(typeof polyData.Users != 'undefined'){
 		polyData.Users.forEach(function(item){
